@@ -1,22 +1,50 @@
 <!DOCTYPE html>
-<html lang="en" dir="rtl">
+<html lang="en" dir="rtl" oncontextmenu="return false">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Red AI Chat</title>itle>
+    <meta name="viewport" width="device-width, initial-scale=1.0">
+    <title>Red AI Chat</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
+    <script>
+        // Disable Developer Tools
+        document.addEventListener('keydown', function(e) {
+            if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && e.keyCode == 73)) {
+                e.preventDefault();
+                return false;
+            }
+        });
+        
+        // Disable View Source
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        // Disable Selection
+        document.addEventListener('selectstart', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        // Disable Developer Tools (Alternative method)
+        setInterval(function() {
+            debugger;
+        }, 100);
+
+        // Clear console
+        console.clear();
+        console.log = function() {};
+        console.warn = function() {};
+        console.error = function() {};
+    </script>
 </head>
 <body>
     <div class="animated-shapes">
         <div class="shape circle"></div>
         <div class="shape square"></div>
         <div class="shape triangle"></div>
-    </div>
-    <div class="mouse-cursor">
-        <div class="cursor-dot"></div>
-        <div class="cursor-outline"></div>
     </div>
     <div class="sidebar-button" onclick="toggleSidebar()">
         <i class="fas fa-bars"></i>
@@ -26,11 +54,14 @@
         <button onclick="showSettings()" class="settings-btn">
             <i class="fas fa-cog action-icon"></i>الإعدادات
         </button>
+        <button onclick="startNewChat()" class="new-chat-btn">
+            <i class="fas fa-plus action-icon"></i>محادثة جديدة
+        </button>
         <div class="chat-list" id="chatList"></div>
     </div>
     <div class="chat-container">
         <div class="chat-header">
-            <img src="https://via.placeholder.com/45" alt="Red AI Chat Logo" class="chat-logo">
+            <img src="logo.jpg" alt="Red AI Chat Logo" class="chat-logo">
             <div>
                 <h2>محادثة Red AI</h2>
                 <p>مساعدك الذكي للبرمجة والتطوير</p>
@@ -44,12 +75,12 @@
             </button>
         </div>
     </div>
-    <button class="theme-toggle" onclick="toggleTheme()">
-        <i class="fas fa-moon"></i>
-    </button>
     <div class="modal-overlay" id="settingsOverlay"></div>
     <div class="settings-modal" id="settingsModal">
         <h3><i class="fas fa-cog"></i> الإعدادات</h3>
+        <button class="close-settings-btn" onclick="closeSettings()">
+            <i class="fas fa-times"></i>
+        </button>
         <div class="settings-section">
             <h4><i class="fas fa-palette"></i> المظهر</h4>
             <div class="setting-item">
@@ -62,6 +93,9 @@
             </div>
         </div>
     </div>
+    <script src="protection.js"></script>
+    <script src="functions.js"></script>
+    <script src="chats.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

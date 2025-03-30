@@ -14,20 +14,32 @@
     --glass-bg: rgba(255, 255, 255, 0.8);
     --shape-color-1: rgba(124, 58, 237, 0.3);
     --shape-color-2: rgba(99, 102, 241, 0.3);
+    --user-message-gradient: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+    --ai-message-gradient: linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%);
 }
 
+/* Remove Dark Theme Variables */
 [data-theme="dark"] {
-    --primary-color: #8B5CF6;
-    --secondary-color: #7C3AED;
-    --background: #111827;
-    --text-color: #F9FAFB;
-    --chat-bg: #1F2937;
-    --user-message-bg: #374151;
-    --ai-message-bg: #2D3748;
-    --border-color: #4B5563;
-    --glass-bg: rgba(31, 41, 55, 0.8);
-    --shape-color-1: rgba(139, 92, 246, 0.3);
-    --shape-color-2: rgba(124, 58, 237, 0.3);
+    display: none;
+}
+
+/* Anti-inspect styles */
+body * {
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+}
+
+/* Prevent highlighting */
+::selection {
+    background: transparent;
+    color: inherit;
+}
+
+::-moz-selection {
+    background: transparent;
+    color: inherit;
 }
 
 /* Shapes and Cursor Styles */
@@ -79,32 +91,11 @@
     animation-delay: -7s;
 }
 
-/* Custom Mouse Cursor */
-.mouse-cursor {
-    pointer-events: none;
-    position: fixed;
-    z-index: 9999;
-}
-
-.cursor-dot {
-    width: 6px;
-    height: 6px;
-    background: var(--primary-color);
-    border-radius: 50%;
-    position: fixed;
-    transform: translate(-50%, -50%);
-    transition: width 0.2s, height 0.2s;
-}
-
+/* Remove Mouse Cursor Styles */
+.mouse-cursor,
+.cursor-dot,
 .cursor-outline {
-    width: 30px;
-    height: 30px;
-    border: 2px solid var(--primary-color);
-    border-radius: 50%;
-    position: fixed;
-    transform: translate(-50%, -50%);
-    transition: all 0.2s;
-    opacity: 0.5;
+    display: none;
 }
 
 /* General Styles - Enhanced */
@@ -208,30 +199,72 @@ body {
     scroll-behavior: smooth;
 }
 
+/* Chat Messages Enhanced Style */
 #chatArea p {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     padding: 15px 20px;
     border-radius: 20px;
-    max-width: 85%;
-    animation: messageIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    max-width: 80%;
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
 #chatArea p:nth-child(odd) {
-    background: var(--user-message-bg);
-    color: var(--text-color);
     margin-right: auto;
     border-bottom-right-radius: 5px;
-    transform-origin: bottom right;
+    background: var(--user-message-bg);
+}
+
+#chatArea p:nth-child(odd) .message-avatar {
+    background: var(--user-message-gradient);
+    color: white;
 }
 
 #chatArea p:nth-child(even) {
-    background: var(--ai-message-bg);
-    color: var(--text-color);
     margin-left: auto;
     border-bottom-left-radius: 5px;
-    transform-origin: bottom left;
+    background: var(--ai-message-bg);
+}
+
+#chatArea p:nth-child(even) .message-avatar {
+    background: var(--ai-message-gradient);
+    color: white;
+}
+
+#chatArea p:nth-child(even) .message-content {
+    background: rgba(124, 58, 237, 0.05);
+    padding: 10px;
+    border-radius: 8px;
+}
+
+#chatArea p:nth-child(odd) .message-content {
+    background: rgba(76, 175, 80, 0.05);
+    padding: 10px;
+    border-radius: 8px;
+}
+
+#chatArea p::before {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border: 10px solid transparent;
+}
+
+#chatArea p:nth-child(odd)::before {
+    right: -10px;
+    border-left-color: rgba(255, 255, 255, 0.1);
+}
+
+#chatArea p:nth-child(even)::before {
+    left: -10px;
+    border-right-color: rgba(255, 255, 255, 0.1);
 }
 
 /* Input Area - Enhanced */
@@ -384,6 +417,87 @@ button:hover {
     font-size: 12px;
 }
 
+/* Chat Item Styles */
+.chat-item {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.chat-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(-3px);
+}
+
+.chat-item.active {
+    background: var(--primary-color);
+    color: white;
+}
+
+.chat-item-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.chat-title {
+    font-weight: 600;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.chat-title-edit {
+    background: transparent;
+    border: 1px dashed var(--primary-color);
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 14px;
+    color: inherit;
+    width: 150px;
+    margin-right: 5px;
+}
+
+.chat-title-edit:focus {
+    outline: none;
+    border-style: solid;
+}
+
+.chat-item-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+.chat-date {
+    font-size: 0.75rem;
+}
+
+.chat-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.chat-actions button {
+    padding: 5px;
+    min-width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.2);
+    color: white;
+}
+
+.chat-actions button:hover {
+    background: rgba(220, 38, 38, 0.8);
+}
+
 /* Settings Button */
 .settings-btn {
     width: 100%;
@@ -399,6 +513,23 @@ button:hover {
 .settings-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+}
+
+/* New Chat Button */
+.new-chat-btn {
+    width: 100%;
+    margin: 10px 0;
+    padding: 12px;
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    color: white;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.new-chat-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
 }
 
 /* Modal Styles */
@@ -430,6 +561,34 @@ button:hover {
     animation: modalSlideIn 0.4s ease-out;
 }
 
+/* Settings Modal Close Button */
+.close-settings-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff4d4d 0%, #cc0000 100%);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-settings-btn:hover {
+    transform: rotate(90deg);
+    background: linear-gradient(135deg, #cc0000 0%, #990000 100%);
+}
+
+.close-settings-btn i {
+    font-size: 16px;
+}
+
 /* Settings Section */
 .settings-section {
     margin: 15px 0;
@@ -458,49 +617,8 @@ button:hover {
     color: var(--text-color);
 }
 
-/* Theme Toggle - Modernized */
+/* Remove Theme Toggle Styles */
 .theme-toggle {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    background: var(--glass-bg);
-    color: var(--text-color);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    z-index: 1001;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(5px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
-
-.theme-toggle:hover {
-    border-color: var(--primary-color);
-    color: var(--primary-color);
-    box-shadow: 0 0 15px rgba(16, 163, 127, 0.2);
-}
-
-.theme-toggle::before {
-    content: '🌙';
-    font-size: 1.2rem;
-    transition: transform 0.5s ease;
-}
-
-.theme-toggle:hover::before {
-    transform: rotate(360deg);
-}
-
-[data-theme="dark"] .theme-toggle::before {
-    content: '☀️';
-}
-
-/* Remove other icons */
-.action-icon {
     display: none;
 }
 
@@ -696,14 +814,6 @@ input[type="range"] {
     100% {
         transform: translate(0, 0) rotate(360deg) scale(1);
     }
-}
-
-/* Add hover effects for interactive elements */
-button:hover ~ .cursor-outline,
-input:hover ~ .cursor-outline,
-a:hover ~ .cursor-outline {
-    transform: scale(1.5);
-    background-color: rgba(var(--primary-color), 0.1);
 }
 
 /* Media Queries */
